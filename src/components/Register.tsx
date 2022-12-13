@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
+import { NavigateFunction, useNavigate } from 'react-router-dom';
 import * as Yup from "yup";
 
 import IUser from "../types/user.type";
 import { register } from "../services/auth.service";
 
 const Register: React.FC = () => {
+  let navigate: NavigateFunction = useNavigate();
+
   const [successful, setSuccessful] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
 
@@ -19,10 +22,10 @@ const Register: React.FC = () => {
     username: Yup.string()
       .test(
         "len",
-        "The username must be between 3 and 20 characters.",
+        "The username must be between 4 and 20 characters.",
         (val: any) =>
           val &&
-          val.toString().length >= 3 &&
+          val.toString().length >= 4 &&
           val.toString().length <= 20
       )
       .required("This field is required!"),
@@ -45,9 +48,9 @@ const Register: React.FC = () => {
     const { username, email, password } = formValue;
 
     register(username, email, password).then(
-      (response) => {
-        setMessage(response.data.message);
-        setSuccessful(true);
+      () => {
+        navigate("/profile");
+        window.location.reload();
       },
       (error) => {
         const resMessage =

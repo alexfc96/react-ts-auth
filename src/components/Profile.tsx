@@ -1,31 +1,44 @@
-import React from "react";
-import { getCurrentUser } from "../services/auth.service";
+import { useState, useEffect } from "react";
+import { getCurrentUser, getUserInfo } from "../services/auth.service";
+import IUser from "../types/user.type";
 
 const Profile: React.FC = () => {
   const currentUser = getCurrentUser();
+  const [infoUser, setInfoUser] = useState<IUser | undefined>(undefined);
+
+
+  useEffect(() => {
+    if(currentUser){
+      const getInfo = async () => {
+        await getUserInfo(currentUser);
+        setInfoUser(await getUserInfo(currentUser));
+      }
+
+      getInfo()
+    }
+  },[])
 
   return (
     <div className="container">
-      <header className="jumbotron">
-        <h3>
-          <strong>{currentUser.username}</strong> Profile
-        </h3>
-      </header>
-      <p>
-        <strong>Token:</strong> {currentUser.accessToken.substring(0, 20)} ...{" "}
-        {currentUser.accessToken.substr(currentUser.accessToken.length - 20)}
-      </p>
-      <p>
-        <strong>Id:</strong> {currentUser.id}
-      </p>
-      <p>
-        <strong>Email:</strong> {currentUser.email}
-      </p>
-      <strong>Authorities:</strong>
-      <ul>
-        {currentUser.roles &&
-          currentUser.roles.map((role: string, index: number) => <li key={index}>{role}</li>)}
-      </ul>
+      {infoUser && (
+        <>
+          <header className="jumbotron">
+            <h3>
+              Profile: <strong>{infoUser.username}</strong> 
+            </h3>
+          </header>
+          <p>
+            <strong>Token:</strong> {currentUser.substring(0, 20)} ...{" "}
+            {currentUser.substr(currentUser.length - 20)}
+          </p>
+          <p>
+            <strong>Id:</strong> {infoUser._id}
+          </p>
+          <p>
+            <strong>Email:</strong> {infoUser.email}
+          </p>
+        </>
+      )}
     </div>
   );
 };
