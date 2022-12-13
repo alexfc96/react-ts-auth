@@ -7,7 +7,7 @@ export const register = (username: string, email: string, password: string) => {
     username,
     email,
     password,
-  }).then((response) => {
+  }).then((response: { data: any; }) => {
     if (response.data) {
       localStorage.setItem("token", JSON.stringify(response.data));
     }
@@ -21,7 +21,7 @@ export const login = (email: string, password: string) => {
       email,
       password,
     })
-    .then((response) => {
+    .then((response: { data: any; }) => {
       if (response.data) {
         localStorage.setItem("token", JSON.stringify(response.data));
       }
@@ -36,7 +36,7 @@ export const getUserInfo = (userToken: string) => {
         token: userToken
       }
     })
-    .then((response) => {
+    .then((response: { data: any; }) => {
       return response.data;
     });
 };
